@@ -21,9 +21,18 @@ public abstract class User {
     private boolean enabled;
     @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     private Role role;
+    private boolean canChangePass;
 
 
     public User() {
+    }
+
+    public boolean isCanChangePass() {
+        return canChangePass;
+    }
+
+    public void setCanChangePass(boolean canChangePass) {
+        this.canChangePass = canChangePass;
     }
 
     public Long getId() {

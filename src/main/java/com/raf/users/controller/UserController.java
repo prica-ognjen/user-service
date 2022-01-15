@@ -36,12 +36,22 @@ public class UserController {
     public ResponseEntity<Void> activateUser(WebRequest request, @PathVariable("id") Long id) {
         return userService.activate(id);
     }
-/*
-    @GetMapping(path = "/account/{id}/resetPassword")
-    public ResponseEntity<Void> resetPassword(WebRequest request, @PathVariable("id") Long id) {
-        return userService.activate(id);
+
+    @GetMapping(path = "/passResetReq/{id}")
+    public ResponseEntity<Void> requestPasswordReset(WebRequest request, @PathVariable("id") Long id) {
+        return userService.requestPasswordReset(id);
     }
-*/
+
+    @GetMapping(path = "/resetPassword/{id}")
+    public ResponseEntity<Void> allowPasswordReset(WebRequest request, @PathVariable("id") Long id) {
+        return userService.allowPasswordChange(id);
+    }
+
+    @GetMapping(path = "/account/{id}/resetPassword")
+    public ResponseEntity<Void> resetPassword(@PathVariable("id") Long id, String newPassword) {
+        return userService.changePassword(id, newPassword);
+    }
+
     @PostMapping(path = "/managers")
     public ResponseEntity<UserDto> createManager(@RequestBody HManagerCreateDto hManagerCreateDto) {
         return userService.save(hManagerCreateDto);

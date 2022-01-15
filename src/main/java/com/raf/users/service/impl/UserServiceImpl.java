@@ -39,9 +39,20 @@ public class UserServiceImpl implements UserService {
     private String createUserEmailDestination;
     private final MessageHelper messageHelper;
     private final AdminRepository adminRepository;
+    private final String passwordResetDestination;
 
     public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository, UserMapper userMapper, TokenService tokenService, RankRepository rankRepository, ClientRepository clientRepository, ManagerRepository managerRepository, JmsTemplate jmsTemplate, @Value("${destination.createUserEmail}") String createUserEmailDestination, MessageHelper messageHelper, AdminRepository adminRepository) {
+                           RoleRepository roleRepository,
+                           UserMapper userMapper,
+                           TokenService tokenService,
+                           RankRepository rankRepository,
+                           ClientRepository clientRepository,
+                           ManagerRepository managerRepository,
+                           JmsTemplate jmsTemplate,
+                           @Value("${destination.createUserEmail}") String createUserEmailDestination,
+                           MessageHelper messageHelper,
+                           AdminRepository adminRepository,
+                           @Value("${destination.passwordReset}") String passwordResetDestination) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
@@ -53,6 +64,7 @@ public class UserServiceImpl implements UserService {
         this.createUserEmailDestination = createUserEmailDestination;
         this.messageHelper = messageHelper;
         this.adminRepository = adminRepository;
+        this.passwordResetDestination = passwordResetDestination;
     }
 
     @Override
@@ -273,6 +285,47 @@ public class UserServiceImpl implements UserService {
 
         if(present) {
             userRepository.findById(id).get().setEnabled(true);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> allowPasswordChange(Long id) {
+        boolean present = userRepository.findById(id).isPresent();
+
+        if(present) {
+            userRepository.findById(id).get().setCanChangePass(true);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<Void> changePassword(Long id, String newPassword) {
+        boolean present = userRepository.findById(id).isPresent();
+
+        if(present && userRepository.findById(id).get().isCanChangePass()) {
+            userRepository.findById(id).get().setCanChangePass(false);
+            userRepository.findById(id).get().setPassword(newPassword);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> requestPasswordReset(Long id) {
+        boolean present = userRepository.findById(id).isPresent();
+
+        if(present) {
+            PasswordResetNotificationDto passwordResetNotificationDto = new PasswordResetNotificationDto(id,userRepository.findById(id).get().getEmail(),NotificationType.NOTIFICATION_RESET_PASSWORD);
+
+            jmsTemplate.convertAndSend(passwordResetDestination, messageHelper.createMessage(passwordResetNotificationDto));
+
             return new ResponseEntity<>(HttpStatus.OK);
         }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -19,7 +19,6 @@ public interface UserService {
 
     ResponseEntity<ClientDto> updateUserReservation(Long userId);
 
-
     ResponseEntity<UserMailDto> getManagerEmail(String hotelName);
 
     ResponseEntity<CReservationDataDto> getUserEmail(Long id);
@@ -35,4 +34,10 @@ public interface UserService {
     ResponseEntity<UserMailDto> getMailFromUser(Long id);
 
     ResponseEntity<Void> activate(Long id);
+
+    ResponseEntity<Void> allowPasswordChange(Long id);
+
+    ResponseEntity<Void> changePassword(Long id, String newPassword);
+
+    ResponseEntity<Void> requestPasswordReset(Long id);
 }
