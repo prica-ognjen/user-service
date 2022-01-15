@@ -1,16 +1,16 @@
 package com.raf.users.dto;
 
 public class ClientCreateDto extends UserCreateDto{
-    private Long passportNumber;
+    private String passport;
 
     public ClientCreateDto() {
     }
 
-    public Long getPassportNumber() {
-        return passportNumber;
+    public String getPassport() {
+        return passport;
     }
 
-    public void setPassportNumber(Long passportNumber) {
-        this.passportNumber = passportNumber;
+    public void setPassport(String passport) {
+        this.passport = passport;
     }
 }

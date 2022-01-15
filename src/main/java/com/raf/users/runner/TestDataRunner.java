@@ -33,7 +33,7 @@ public class TestDataRunner implements CommandLineRunner {
         roleRepository.save(roleManager);
 
         Rank rankBronze = new Rank("ROLE_BRONZE");
-        rankBronze.setPopust(0.0);
+        rankBronze.setPopust(0.05);
         Rank rankSilver = new Rank("ROLE_SILVER");
         rankSilver.setPopust(0.1);
         Rank rankGold = new Rank("ROLE_GOLD");
@@ -43,7 +43,7 @@ public class TestDataRunner implements CommandLineRunner {
         rankRepository.save(rankSilver);
         rankRepository.save(rankGold);
 
-        HManager admin = new HManager();
+        Admin admin = new Admin();
         admin.setUsername("admin");
         admin.setPassword("123");
         admin.setRole(roleRepository.findByName("ROLE_ADMIN"));
@@ -53,6 +53,8 @@ public class TestDataRunner implements CommandLineRunner {
         HManager manager = new HManager();
         manager.setUsername("manager");
         manager.setPassword("1234");
+        manager.setEmail("mpavle999@gmail.com");
+        manager.setHotelName("hotel1");
         manager.setRole(roleRepository.findByName("ROLE_MANAGER"));
         manager.setEnabled(true);
         userRepository.save(manager);
@@ -60,6 +62,9 @@ public class TestDataRunner implements CommandLineRunner {
         Client client1 = new Client();
         client1.setUsername("client1");
         client1.setPassword("12345");
+        client1.setEmail("gosndela@gmail.com");
+        client1.setFirstName("Gosn");
+        client1.setLastName("Dela");
         client1.setRole(roleRepository.findByName("ROLE_USER"));
         client1.setEnabled(true);
         client1.setRank(rankRepository.findByName("ROLE_BRONZE"));
@@ -68,10 +73,21 @@ public class TestDataRunner implements CommandLineRunner {
         Client client2 = new Client();
         client2.setUsername("client2");
         client2.setPassword("23456");
+        client1.setEmail("");
         client2.setRole(roleRepository.findByName("ROLE_USER"));
         client2.setEnabled(true);
         client2.setRank(rankRepository.findByName("ROLE_BRONZE"));
+        System.out.println("RANK " + rankRepository.findByName("ROLE_BRONZE"));
         userRepository.save(client2);
+
+        HManager manager2 = new HManager();
+        manager2.setUsername("manager2");
+        manager2.setPassword("1234");
+        manager2.setEmail("");
+        manager2.setHotelName("hotel2");
+        manager2.setRole(roleRepository.findByName("ROLE_MANAGER"));
+        manager2.setEnabled(true);
+        userRepository.save(manager2);
 
     }
 }

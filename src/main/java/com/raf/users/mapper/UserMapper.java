@@ -4,15 +4,18 @@ import com.raf.users.domain.Client;
 import com.raf.users.domain.HManager;
 import com.raf.users.domain.User;
 import com.raf.users.dto.*;
+import com.raf.users.repository.RankRepository;
 import com.raf.users.repository.RoleRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
     private RoleRepository roleRepository;
+    private RankRepository rankRepository;
 
-    public UserMapper(RoleRepository roleRepository) {
+    public UserMapper(RoleRepository roleRepository,RankRepository rankRepository) {
         this.roleRepository = roleRepository;
+        this.rankRepository = rankRepository;
     }
     public User userCreateDtoToUser(UserCreateDto userCreateDto){
 
@@ -27,7 +30,8 @@ public class UserMapper {
             hManager.setRole(roleRepository.findByName("ROLE_MANAGER"));
             hManager.setHotelName(((HManagerCreateDto)userCreateDto).getHotelName());
             hManager.setUsername(userCreateDto.getUsername());
-            hManager.setEnabled(true);
+            hManager.setStartDate(((HManagerCreateDto) userCreateDto).getStart());
+            hManager.setEnabled(false);
             return hManager;
         }else if(userCreateDto instanceof ClientCreateDto){
             Client client = new Client();
@@ -38,9 +42,10 @@ public class UserMapper {
             client.setFirstName(userCreateDto.getFirstName());
             client.setLastName(userCreateDto.getLastName());
             client.setRole(roleRepository.findByName("ROLE_USER"));
-            client.setPassportNumber(((ClientCreateDto)userCreateDto).getPassportNumber());
+            client.setRank(rankRepository.findByName("ROLE_BRONZE"));
             client.setUsername(userCreateDto.getUsername());
-            client.setEnabled(true);
+            client.setPassport(((ClientCreateDto) userCreateDto).getPassport());
+            client.setEnabled(false);
             return client;
 
         }

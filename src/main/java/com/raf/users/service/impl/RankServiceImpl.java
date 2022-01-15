@@ -1,11 +1,16 @@
 package com.raf.users.service.impl;
 
+import com.raf.users.domain.Client;
 import com.raf.users.domain.Rank;
+import com.raf.users.dto.RankDto;
+import com.raf.users.repository.ClientRepository;
 import com.raf.users.repository.RankRepository;
 import com.raf.users.repository.RoleRepository;
 import com.raf.users.repository.UserRepository;
 import com.raf.users.security.service.TokenService;
 import com.raf.users.service.RankService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,12 +24,14 @@ public class RankServiceImpl implements RankService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final RankRepository rankRepository;
+    private final ClientRepository clientRepository;
 
-    public RankServiceImpl(TokenService tokenService, UserRepository userRepository, RoleRepository roleRepository, RankRepository rankRepository) {
+    public RankServiceImpl(TokenService tokenService, UserRepository userRepository, RoleRepository roleRepository, RankRepository rankRepository, ClientRepository clientRepository) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.rankRepository = rankRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
@@ -59,5 +66,13 @@ public class RankServiceImpl implements RankService {
     @Override
     public List<Rank> findAll() {
         return rankRepository.findAll();
+    }
+
+    @Override
+    public ResponseEntity<RankDto> findDiscount(Long userId) {
+        RankDto rankDto = new RankDto();
+        rankDto.setName((clientRepository.getOne(userId)).getRank().getName());
+        rankDto.setPopust((clientRepository.getOne(userId)).getRank().getPopust());
+        return new ResponseEntity<>(rankDto, HttpStatus.OK);
     }
 }

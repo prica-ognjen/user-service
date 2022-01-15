@@ -1,6 +1,7 @@
 package com.raf.users.controller;
 
 import com.raf.users.domain.Rank;
+import com.raf.users.dto.RankDto;
 import com.raf.users.security.CheckSecurity;
 import com.raf.users.service.RankService;
 import com.raf.users.service.UserService;
@@ -21,7 +22,7 @@ public class RankController {
     }
 
     @CheckSecurity(roles = {"ROLE_ADMIN"})
-    @DeleteMapping(path = "{rankId}")
+    @DeleteMapping(path = "/{rankId}")
     public ResponseEntity<?> deleteRank(@RequestHeader("Authorization") String authorization, @PathVariable("rankId") Long rankId){
         rankService.deleteRank(rankId);
         return new ResponseEntity<>( HttpStatus.OK);
@@ -34,7 +35,7 @@ public class RankController {
     }
 
     @CheckSecurity(roles = {"ROLE_ADMIN"})
-    @PutMapping(path = "{rankId}")
+    @PutMapping(path = "/{rankId}")
     public ResponseEntity<?> editRank(@RequestHeader("Authorization") String authorization, @PathVariable("rankId") Long rankId, Double popust){
         rankService.editRank(rankId, popust);
         return new ResponseEntity<>( HttpStatus.CREATED);
@@ -47,9 +48,15 @@ public class RankController {
     }
 
     @CheckSecurity(roles = {"ROLE_ADMIN"})
-    @GetMapping("{rankId}")
+    @GetMapping("/{rankId}")
     public ResponseEntity<Rank> getRank(@RequestHeader("Authorization") String authorization, @PathVariable("rankId") Long rankId){
         return new ResponseEntity<Rank>(rankService.findById(rankId), HttpStatus.OK);
+    }
+
+    @CheckSecurity(roles = {"ROLE_USER"})
+    @GetMapping("/discount/{userId}")
+    public ResponseEntity<RankDto> getDiscount(@RequestHeader("Authorization") String authorization, @PathVariable("userId") Long userId){
+        return rankService.findDiscount(userId);
     }
 
 }

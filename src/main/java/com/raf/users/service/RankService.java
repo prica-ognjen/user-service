@@ -1,6 +1,8 @@
 package com.raf.users.service;
 
 import com.raf.users.domain.Rank;
+import com.raf.users.dto.RankDto;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface RankService {
     Rank findById(Long rankId);
 
     List<Rank> findAll();
+
+    ResponseEntity<RankDto> findDiscount(Long userId);
 }

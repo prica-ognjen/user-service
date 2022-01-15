@@ -21,8 +21,7 @@ public abstract class User {
     private boolean enabled;
     @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     private Role role;
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private Rank rank;
+
 
     public User() {
     }
@@ -97,14 +96,6 @@ public abstract class User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public Rank getRank() {
-        return rank;
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
     }
 
     public boolean isEnabled() {
